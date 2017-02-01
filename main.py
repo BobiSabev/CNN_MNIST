@@ -7,6 +7,7 @@ from time import sleep
 import os.path
 from network import network
 import matplotlib.pyplot as plt
+import csv
 
 # TODO experiment with learning rate and batch size
 # define parameters
@@ -17,6 +18,8 @@ DROP_OUT = 0.5
 TRAIN_SIZE = 2000  # 42000 for full dataset
 VALIDATION_SIZE = 500  # train examples to be used for validation: maximum  42000 - TRAIN_SIZE
 TEST_SIZE = 100  # 28000 for all test
+IMAGE_SIZE = 28 * 28
+N_CLASSES = 10
 # TODO Make a real submission - change parameters to
 """
 iterations = 20000
@@ -31,13 +34,13 @@ And delete model files ?!?
 """
 Read data
 """
-
+# init a data object, fill it from
 data = Data()
 data.read_data(filepath='data/train.csv',
                train_size=TRAIN_SIZE,
                validation_size=VALIDATION_SIZE,
                convert_to_one_hot=True)
-#data.train.display_digit()
+# data.train.display_digit()
 """
 Now all Data is split into 3 Datasets:
     1. Train data (images, labels) - on this data we train the model at first
@@ -48,16 +51,14 @@ an training in on training + validation set, we predict y_test from X_test and w
 """
 
 sess = tf.InteractiveSession()
-
-
 # TODO try different layer structures
 """
 Build the neural network
 """
 # Placeholder for one image and conversion to 28x28
-x = tf.placeholder(tf.float32, shape=[None, 784])
+x = tf.placeholder(tf.float32, shape=[None, IMAGE_SIZE])
 # Placeholder for labels
-y_ = tf.placeholder(tf.float32, shape=[None, 10])
+y_ = tf.placeholder(tf.float32, shape=[None, N_CLASSES])
 # Placeholder for drop-out probability
 keep_prob = tf.placeholder(tf.float32)
 
@@ -66,18 +67,16 @@ keep_prob = tf.placeholder(tf.float32)
 Build the layers with TFLearn in network.py
 (CONV -> RELU)*2 -> POOL) * 2  -> (FC -> RELU) * 2 -> FC
 """
-net = network(input_layer = x, drop_out = DROP_OUT)
+# TODO add parameters to the network to generalize it
+net = network(input_layer=x, drop_out=DROP_OUT)
+
 
 
 # define training parameters
-def training_parameters():
-    cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(net, y_))
-    train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
-    correct_prediction = tf.equal(tf.argmax(net, 1), tf.argmax(y_, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    return cross_entropy, train_step, correct_prediction, accuracy
-
-cross_entropy, train_step, correct_prediction, accuracy = training_parameters()
+cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(net, y_))
+train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+correct_prediction = tf.equal(tf.argmax(net, 1), tf.argmax(y_, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 
 """
@@ -96,6 +95,7 @@ else:
 # Without the sleep trange makes funny printing
 sleep(0.4)
 
+
 """
 Check accuracy
 """
@@ -103,10 +103,7 @@ Check accuracy
 train_accuracies = []
 validation_accuracies = []
 x_range = []
-
 display_step = 1
-
-
 
 
 """
@@ -170,7 +167,7 @@ Make a submission file for Kaggle (Optional)
 """
 answer = input("\nDo you want to run on test data and write a Kaggle submission? (y/n)")
 if answer == 'y':
-    import csv
+
     # Open test data
     print("Opening test data...")
     # TODO - optimize the reading and writing - it is really slow
@@ -193,6 +190,12 @@ if answer == 'y':
     # Close out the files.
     prediction_file.close()
 
+
+
+
+"""
+Johan's code for submission
+"""
 """
     import pandas as pd
     import numpy as np
