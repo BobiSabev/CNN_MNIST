@@ -1,13 +1,14 @@
 import pandas as p
 import tensorflow as tf
-from data.Data import Data
-from data.Dataset import Dataset
+import matplotlib.pyplot as plt
+import csv
 from tqdm import trange
 from time import sleep
 import os.path
+from data.Data import Data
+from data.Dataset import Dataset
 from network import network
-import matplotlib.pyplot as plt
-import csv
+
 
 # TODO experiment with learning rate and batch size
 # define parameters
@@ -67,7 +68,6 @@ keep_prob = tf.placeholder(tf.float32)
 Build the layers with TFLearn in network.py
 (CONV -> RELU)*2 -> POOL) * 2  -> (FC -> RELU) * 2 -> FC
 """
-# TODO add parameters to the network to generalize it
 net = network(input_layer=x, drop_out=DROP_OUT)
 
 
@@ -183,46 +183,11 @@ if answer == 'y':
     data.test.labels = prediction.eval(feed_dict={x: data.test.images, keep_prob: 1.0})
 
     print("Writing predictions...")
-    row_num = 0
-    for i in range(data.test.labels.shape[0]):
-        p.writerow(["{}".format(row_num), "{}".format(data.test.labels[row_num])])
-        row_num += 1
-    # Close out the files.
-    prediction_file.close()
-
-
-
-
-"""
-Johan's code for submission
-"""
-"""
-    import pandas as pd
     import numpy as np
-
-    test_images = pd.read_csv('data/test.csv').values
-    test_images = test_images.astype(np.float)
-    test_images = np.multiply(test_images, 1.0 / 255.0)
-
-    predicted_lables = np.zeros(test_images.shape[0])
-
-    # TODO //BATCH_SIZE?
-    for i in range(0, test_images.shape[0] // BATCH_SIZE):
-        predicted_lables[i * BATCH_SIZE: (i + 1) * BATCH_SIZE] = accuracy.eval(
-            feed_dict={x: test_images[i * BATCH_SIZE: (i + 1) * BATCH_SIZE],
-                       keep_prob: 1.0})
-
-    print('predicted_lables({0})'.format(len(predicted_lables)))
-
-"""
-#    Save to .csv
-"""
-    np.savetxt('submission_softmax.csv',
-               np.c_[range(1, len(test_images) + 1), predicted_lables],
+    # TODO fix the prediction file, on the first row it writes  ,label
+    np.savetxt("data/prediction.csv",
+               np.c_[range(1, data.test.labels.shape[0]+1), data.test.labels],
                delimiter=',',
                header='ImageId,Label',
                comments='',
                fmt='%d')
-"""
-
-

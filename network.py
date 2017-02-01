@@ -13,7 +13,9 @@ After 5000 (on avg 1.26) 0.96381  on 0.2 validation
 """
 from tflearn import conv_2d, max_pool_2d, fully_connected, dropout
 from tensorflow import reshape
-def network(input_layer, drop_out):
+
+# TODO add parameter to the network to generalize it
+def network(input_layer, drop_out=0.5):
     net = reshape(input_layer, [-1, 28, 28, 1])
     net = conv_2d(net, nb_filter=16, filter_size=[3, 3], activation='relu')
     net = conv_2d(net, nb_filter=32, filter_size=[3, 3], activation='relu')

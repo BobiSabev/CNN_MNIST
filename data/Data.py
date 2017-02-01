@@ -7,7 +7,7 @@ class Data(object):
         self.validation = validation
         self.test = test
 
-    # what about 'label', ADAPT FOR TEST !!!!!!
+    # TODO what about 'label', ADAPT FOR TEST !!!!!!, add a loading bar for reading
     def read_data(self, filepath, train_size=2000, validation_size=0, convert_to_one_hot=False):
         print("Reading data...")
         train_data_read = read_csv(filepath, nrows=train_size)
