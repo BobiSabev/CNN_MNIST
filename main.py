@@ -1,15 +1,12 @@
 import pandas as p
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
 from data.Data import Data
 from data.Dataset import Dataset
 from tqdm import trange
 from time import sleep
 import os.path
 from network import network
-
 import matplotlib.pyplot as plt
-
 
 # TODO experiment with learning rate and batch size
 # define parameters
@@ -18,7 +15,7 @@ LEARNING_RATE = 1e-4
 BATCH_SIZE = 50
 DROP_OUT = 0.5
 TRAIN_SIZE = 2000  # 42000 for full dataset
-VALIDATION_SIZE_FRACTION = 0.20  # fraction of train examples to be used for validation
+VALIDATION_SIZE = 500  # train examples to be used for validation: maximum  42000 - TRAIN_SIZE
 TEST_SIZE = 100  # 28000 for all test
 # TODO Make a real submission - change parameters to
 """
@@ -31,32 +28,16 @@ And delete model files ?!?
 """
 
 
-
-
 """
 Read data
 """
-# TODO - conver the data reading into a fuction
-def read_data():
-    print("Reading data...")
-    train_data_read = p.read_csv('data/train.csv', nrows=TRAIN_SIZE)
-    # Split into the training data into train and validation
-    X_train, X_validation, y_train, y_validation = train_test_split(train_data_read.drop(['label'], axis=1),
-                                                                    train_data_read['label'],
-                                                                    test_size=VALIDATION_SIZE_FRACTION)
-    # Initialize Data object and fill it with the data
-    data = Data()
-    data.train = Dataset(X_train, y_train)
-    data.validation = Dataset(X_validation, y_validation)
-    # TODO - optimize the conversion
-    # Convert to one-hot vector. Example: 8 -> [ 0.  0.  0.  0.  0.  0.  0.  0.  1.  0.]
-    data.train.to_one_hot()
-    data.validation.to_one_hot()
-    return data
 
-
-data = read_data()
-data.train.display_digit()
+data = Data()
+data.read_data(filepath='data/train.csv',
+               train_size=TRAIN_SIZE,
+               validation_size=VALIDATION_SIZE,
+               convert_to_one_hot=True)
+#data.train.display_digit()
 """
 Now all Data is split into 3 Datasets:
     1. Train data (images, labels) - on this data we train the model at first
@@ -68,9 +49,8 @@ an training in on training + validation set, we predict y_test from X_test and w
 
 sess = tf.InteractiveSession()
 
-# TODO make the definition of the network prettier
-# TODO try different layer structures
 
+# TODO try different layer structures
 """
 Build the neural network
 """
@@ -142,7 +122,7 @@ for i in t:
     t.set_postfix(acc=train_accuracy)
     train_step.run(feed_dict={x: batch_x, y_: batch_y, keep_prob: DROP_OUT})
 
-    if i % 2 == 0:
+    if i % 20 == 0:
         if data.validation.images.shape[0] > 0:
             validation_accuracy = accuracy.eval(feed_dict={x: data.validation.images,
                                                            y_: data.validation.labels,
