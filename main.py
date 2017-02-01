@@ -81,21 +81,11 @@ y_ = tf.placeholder(tf.float32, shape=[None, 10])
 # Placeholder for drop-out probability
 keep_prob = tf.placeholder(tf.float32)
 
+
 """
-(CONV -> RELU -> POOL) * 2 -> FC -> RELU -> FC
-After 600 0.917619 on 0.2 validation
-
-Try with:
-((CONV -> RELU)*2 -> POOL) * 2  -> (FC -> RELU) * 2 -> FC
-with filter_size = [3,3], num filters 20, 40, 60, 80
+Build the layers with TFLearn in network.py
+(CONV -> RELU)*2 -> POOL) * 2  -> (FC -> RELU) * 2 -> FC
 """
-
-
-# Build the layers with TFLearn
-# for input reshape the images to 28x28
-
-
-
 net = network(input_layer = x, drop_out = DROP_OUT)
 
 
