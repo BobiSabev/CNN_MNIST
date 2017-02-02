@@ -2,7 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Dataset(object):
+    """
+        Dataset is a object to hold ndarrays of data and labels
 
+        Attributes:
+            images - the data for the network
+            labels - target for every image
+        Functions
+            to_one_hot - converts labels in the object to one hot vectors
+            batch - take a random batch of given predefined size
+            display_digit - display a random image from the dataset
+    """
     def __init__(self, images, labels):
         self.images = np.array(images, dtype=float)
         self.labels = np.array(labels)

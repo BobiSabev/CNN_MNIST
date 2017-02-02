@@ -1,7 +1,21 @@
 from data.Dataset import Dataset
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
+
+
 class Data(object):
+    """
+        Data objects is a collection of Datasets to hold all data needed for the model
+
+        Attributes:
+            train - data to be trained on
+            validation - validation data
+            test - data to test, missing labels
+        Functions
+            read_data - reads a data file and fills train and validation data from a given size.
+                        optionally labels can be converted to one hot vectors
+    """
+
     def __init__(self, train=Dataset(0,0), validation=Dataset(0,0), test=Dataset(0,0)):
         self.train = train
         self.validation = validation
