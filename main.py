@@ -16,22 +16,25 @@ EPOCHS = 1
 LEARNING_RATE = 1e-4
 BATCH_SIZE = 50
 DROP_OUT = 0.5
+
 TRAIN_SIZE = 2000  # 42000 for full dataset
 VALIDATION_SIZE = 500  # train examples to be used for validation: maximum  42000 - TRAIN_SIZE
 TEST_SIZE = 100  # 28000 for all test
+
 N_COLLECTED_DATA_POINTS = 1
 if N_COLLECTED_DATA_POINTS > 0:
     EVALUATE_EVERY_N_ITER = (EPOCHS * TRAIN_SIZE // BATCH_SIZE) // N_COLLECTED_DATA_POINTS
 else:
     EVALUATE_EVERY_N_ITER = (EPOCHS * TRAIN_SIZE // BATCH_SIZE) + 100
+
 IMAGE_SIZE = 28 * 28
 N_CLASSES = 10
 # TODO Make a real submission - change parameters to
 """
-iterations = 20000
-num_train_examples = 42000
-validation_size = 0
-num_test_examples = 28000
+EPOCHS = 25
+TRAIN_SIZE = 42000
+VALIDATION_SIZE = 0
+TEST_SIZE = 28000
 
 And delete model files ?!?
 """
@@ -76,7 +79,10 @@ Build the neural network layers with TFLearn in network.py
 """
 net = network(input_layer=x, drop_out=DROP_OUT)
 
-# define training parameters
+
+"""
+Define training parameters
+"""
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(net, y_))
 train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(net, 1), tf.argmax(y_, 1))
@@ -98,7 +104,7 @@ else:
     print("Training a new model")
     sess.run(tf.global_variables_initializer())
 # Without the sleep trange makes funny printing
-sleep(0.4)
+sleep(1)
 
 
 """
