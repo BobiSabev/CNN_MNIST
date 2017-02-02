@@ -10,7 +10,7 @@ class Data(object):
     # TODO what about 'label', ADAPT FOR TEST !!!!!!, add a loading bar for reading
     def read_data(self, filepath, train_size=2000, validation_size=0, convert_to_one_hot=False):
         print("Reading data...")
-        train_data_read = read_csv(filepath, nrows=train_size)
+        train_data_read = read_csv(filepath, nrows=(train_size + validation_size))
         # Split into the training data into train and validation
         X_train, X_validation, y_train, y_validation = train_test_split(train_data_read.drop(['label'], axis=1),
                                                                         train_data_read['label'],
